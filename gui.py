@@ -6,7 +6,7 @@ def files_list(list_name):
 
     return [item for item in list_name]
 
-FILMS = [
+FILES = [
     "There will be blood", "Paul Thomas Anderson",
     "Lion King","Rob Minkoff",
     "Toy Story","Josh Cooley",
@@ -28,13 +28,22 @@ window = sg.Window('Servidor TCP', layout, margins=(120, 180), element_justifica
 while True:
     event, values = window.read()
     if event == 'Receber':
-        arquivo_desejado = sg.popup_get_text('Qual arquivo deseja?', background_color='white', text_color='black', no_titlebar=True)
+        sg.popup('Arquivos disponíveis:', *files_list(FILES), background_color='white', text_color='black', no_titlebar=True, keep_on_top=True)    #trocar a lisat passada como parâmetro
+        arquivos_desejados = sg.popup_get_text('Qual arquivo deseja? Para mais de um arquivo, separe-os por vírgula.', background_color='white', text_color='black', no_titlebar=True)
+        try:
+            arquivos_desejados = [x.strip() for x in arquivos_desejados.split(',')]
+        except AttributeError:
+            arquivos_desejados = ['']
 
     if event == 'Listagem':
-        sg.popup('Arquivos presentes no servidor:', *files_list(FILMS), background_color='white', text_color='black', no_titlebar=True, keep_on_top=True)    #trocar a lisat passada como parâmetro
+        sg.popup('Arquivos presentes no servidor:', *files_list(FILES), background_color='white', text_color='black', no_titlebar=True, keep_on_top=True)    #trocar a lisat passada como parâmetro
 
     if event == 'Enviar':
-        sg.popup_get_file('Insira o arquivo:', background_color='white', text_color='black', no_titlebar=True)
+        arquivos_enviados = sg.popup_get_file('Insira o arquivo:', background_color='white', text_color='black', no_titlebar=True, multiple_files=True)
+        try:
+            arquivos_enviados = arquivos_enviados.split(';')
+        except AttributeError:
+            arquivos_enviados = ['']
 
     if event == sg.WIN_CLOSED or event == 'Encerrar':
         break

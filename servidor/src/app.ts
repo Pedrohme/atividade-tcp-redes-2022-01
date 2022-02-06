@@ -31,7 +31,7 @@ server.on('connection', socket => {
         socket.end();
     });
 
-    request.once('payloadExceeded', function handleExceededPayload(header: RequestHeader) {
+    request.once('payloadExceeded', function handleExceededPayload() {
         console.log('Payload too large');
         request.end();
 

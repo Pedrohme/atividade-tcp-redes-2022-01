@@ -4,8 +4,8 @@ import Stream from "stream";
 const fileDir = './files/';
 
 export abstract class fileAction {
-    public abstract Act(stream: Stream.Readable): any;
-    public abstract handleError(): any;
+    public abstract Act(stream: Stream.Readable) : void;
+    public abstract handleError() : void;
 }
 
 export class fileWriter extends fileAction {

@@ -18,7 +18,7 @@ export class RequestStream extends Stream.Transform {
         this.push(chunk);
         this.payloadTotalSize += chunk.byteLength;
         if (!this.header.valid && this.readableLength >= 16) {
-            let buffer: Buffer = this.read(16);
+            const buffer: Buffer = this.read(16);
             if (buffer) {
                 this.header.parseHeader(buffer);
 
@@ -29,7 +29,7 @@ export class RequestStream extends Stream.Transform {
             }
         }
         if (this.header.valid && this.payloadTotalSize > this.header.payloadSize) {
-            this.emit('payloadExceeded', this.header);
+            this.emit('payloadExceeded');
         }
         callback();
     }

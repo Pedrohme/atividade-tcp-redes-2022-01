@@ -1,47 +1,21 @@
 import net from 'net';
 import config from './config.json';
-import { writeToFile } from './files';
+import * as Files from './files';
+import { RequestStream, RequestActions, RequestHeader } from './request';
 
-enum Options {
-    A,
-    B,
-    C
-}
+const server = net.createServer();
 
-const server = net.createServer((socket) => {
-    console.log('Cliente Conectou!');
+server.on('connection', socket => {
+    console.log('Client connected');
+    const request = new RequestStream();
+    let action: Files.fileAction;
 
-    let first = true;
-    let option = '';
-    let buffers: Buffer[] = [];
-
-    socket.on('data', (data) => {
-        if (first) {
-            first = false;
-            const firstByteChar = String.fromCharCode(data[0]);
-
-            if (Object.keys(Options).includes(firstByteChar)) {
-                option = firstByteChar;
-            }
-            else {
-                socket.write("Requisição inválida!");
-                socket.destroy();
-            }
-        }
-        buffers.push(data);
-    });
-
-    socket.on('end', () => {
-        switch (option) {
-            case 'A':
-                const buf = Buffer.concat(buffers);
-                writeToFile(buf);
-                break;
-            case 'B':
-
-                break;
-            case 'C':
-
+    request.once('gotValidHeader', function routeAction(header: RequestHeader) {
+        console.log('Got header');
+        switch (header.action) {
+            case RequestActions.WriteFile:
+                action = new Files.fileWriter();
+                action.Act(request);
                 break;
 
             default:
@@ -49,8 +23,32 @@ const server = net.createServer((socket) => {
         }
     });
 
+    request.once('invalidHeader', function breakConnection() {
+        console.log('Got Invalid header');
+
+        socket.write('400');
+
+        socket.end();
+    });
+
+    request.once('payloadExceeded', function handleExceededPayload(header: RequestHeader) {
+        console.log('Payload too large');
+        request.end();
+
+        action.handleError();
+
+        socket.write('413');
+        socket.destroy();
+    });
+
+    socket.pipe(request);
+
+    socket.on('end', async () => {
+        console.log("Data stream ended");
+    });
+
     socket.on('close', () => {
-        console.log('Conexão fechada!');
+        console.log('Connection closed');
     });
 });
 
@@ -59,6 +57,6 @@ server.on('error', (err) => {
 });
 
 server.listen(config.SERVER_PORT, () => {
-    console.log('Servidor escutando!');
+    console.log('Server listening!');
 });
 

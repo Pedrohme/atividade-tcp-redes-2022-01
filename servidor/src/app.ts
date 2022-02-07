@@ -76,9 +76,9 @@ process.on('SIGINT', function endProgramGracefully() {
     server.close((err) => {
         if (err) {
             console.log(err.message);
+            process.exit(1);
         }
         console.log('Server closed!');
     });
-    process.exit(0);
 });
 

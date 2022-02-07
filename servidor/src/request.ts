@@ -33,6 +33,10 @@ export class RequestStream extends Stream.Transform {
         }
         callback();
     }
+
+    public getHeader(): RequestHeader {
+        return this.header;
+    }
 }
 
 export class RequestHeader {

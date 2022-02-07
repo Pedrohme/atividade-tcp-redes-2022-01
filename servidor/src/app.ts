@@ -1,4 +1,6 @@
+import { mkdir } from 'fs';
 import net from 'net';
+import Stream from 'stream';
 import config from './config.json';
 import * as Files from './files';
 import { RequestStream, RequestActions, RequestHeader } from './request';
@@ -15,7 +17,30 @@ server.on('connection', socket => {
         switch (header.action) {
             case RequestActions.WriteFile:
                 action = new Files.fileWriter();
-                action.Act(request);
+                (action as Files.fileWriter).Act(() => {
+                    console.log(`${(action as Files.fileWriter).fileName} written`);
+                    socket.write('201');
+                }, request);
+                break;
+
+            case RequestActions.ListFiles:
+                action = new Files.fileLister();
+                (action as Files.fileLister).Act((err, files) => {
+                    if (err) {
+                        console.log(err.message);
+                        socket.write('500');
+                        socket.end();
+                    }
+                    else {
+                        const stream = new Stream.Readable({
+                            read: () => {
+                                const file = files.shift();
+                                file ? stream.push(file.padEnd(256, '#')) : stream.push(null);
+                            }
+                        });
+                        stream.pipe(socket);
+                    }
+                });
                 break;
 
             default:
@@ -82,3 +107,8 @@ process.on('SIGINT', function endProgramGracefully() {
     });
 });
 
+mkdir('./files', { recursive: true }, (err) => {
+    if (!err) {
+        console.log('Files directory created');
+    }
+});

@@ -43,7 +43,7 @@ server.on('connection', socket => {
 
     socket.pipe(request);
 
-    socket.on('end', async () => {
+    socket.on('end', () => {
         console.log("Data stream ended");
     });
 
@@ -56,7 +56,29 @@ server.on('error', (err) => {
     throw err;
 });
 
-server.listen(config.SERVER_PORT, () => {
+server.listen({ port: config.SERVER_PORT, host: 'localhost' }, () => {
     console.log('Server listening!');
+    console.log('');
+    const addr = server.address();
+    if (addr && (typeof addr !== 'string')) {
+        console.log('Server info:');
+        console.log(`Address: ${addr.address}`);
+        console.log(`Family: ${addr.family}`);
+        console.log(`Port: ${addr.port}`);
+    }
+    console.log('');
+});
+
+process.on('SIGINT', function endProgramGracefully() {
+    console.log('');
+    console.log('Waiting for server to close...');
+    console.log('');
+    server.close((err) => {
+        if (err) {
+            console.log(err.message);
+        }
+        console.log('Server closed!');
+    });
+    process.exit(0);
 });
 

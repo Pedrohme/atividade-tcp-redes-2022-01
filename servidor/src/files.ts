@@ -91,7 +91,9 @@ export class fileReader extends fileAction {
         stream.once('gotName', function writeFile() {
             console.log(`Reading ${fileName}`);
 
-            fs.createReadStream(`${fileDir}/${fileName}`).on('ready', callback);
+            const fileStream = fs.createReadStream(`${fileDir}/${fileName}`).on('ready', () => {
+                callback(fileStream);
+            });
         });
     }
 

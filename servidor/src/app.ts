@@ -43,6 +43,13 @@ server.on('connection', socket => {
                 });
                 break;
 
+            case RequestActions.SendFile:
+                action = new Files.fileReader();
+                (action as Files.fileReader).Act((fileStream) => {
+                    fileStream.pipe(socket);
+                }, request);
+                break;
+
             default:
                 break;
         }

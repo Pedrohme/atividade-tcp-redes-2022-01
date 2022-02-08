@@ -20,17 +20,29 @@ def conectar_com_servidor():
 # função que informa ao servidor o(s) arquivo(s) a ser(em) enviado(s) para o cliente:
 
 
-def receber_arquivos(arquivos_desejados):
+def receber_arquivos(arquivos_servidor, arquivos_desejados):
     cliente = conectar_com_servidor()
 
     action = 'C'
-    payloadSize = ''.ljust(256, '#')
+    payloadSize = '256'.ljust(15, '#')
 
+    os.makedirs('./files', exist_ok=True)
     for arq in arquivos_desejados:
-        fileName = arq.ljust(256, '#')
-        header = action + payloadSize + fileName
-        encoded = str.encode(header)
-        cliente.sendall(encoded)
+        if arq in arquivos_servidor:
+            fileName = arq.ljust(256, '#')
+            header = action + payloadSize + fileName
+            encoded = str.encode(header)
+            cliente.sendall(encoded)
+
+            with open('./files/{}'.format(arq), 'ab') as f:
+                while True:
+                    print('Receiving...')
+                    chunk = cliente.recv(BUFFERSIZE)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                print('Done Receiving')
+
 
 # função que informa ao servidor que o cliente deseja visualizar os arquivos existentes no servidor:
 

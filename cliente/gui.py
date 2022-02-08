@@ -35,17 +35,19 @@ while True:
         arquivos_servidor = listar_arquivos_servidor()
         sg.popup('Arquivos disponíveis:', *files_list(arquivos_servidor),
                  background_color='white', text_color='black', no_titlebar=True, keep_on_top=True)
-        # lista de arquivo(s) desejado(s):
-        arquivos_desejados = sg.popup_get_text(
-            'Qual arquivo deseja? Para mais de um arquivo, separe-os por vírgula.', background_color='white', text_color='black', no_titlebar=True)
-        try:
-            arquivos_desejados = [x.strip()
-                                  for x in arquivos_desejados.split(',')]
-        except AttributeError:
-            arquivos_desejados = ['']
 
-        if len(arquivos_desejados) >= 1 and arquivos_desejados[0] != '':
-            receber_arquivos(arquivos_desejados)
+        if len(arquivos_servidor) > 0:
+            # lista de arquivo(s) desejado(s):
+            arquivos_desejados = sg.popup_get_text(
+                'Qual arquivo deseja? Para mais de um arquivo, separe-os por vírgula.', background_color='white', text_color='black', no_titlebar=True)
+            try:
+                arquivos_desejados = [x.strip()
+                                    for x in arquivos_desejados.split(',')]
+            except AttributeError:
+                arquivos_desejados = ['']
+
+            if len(arquivos_desejados) >= 1 and arquivos_desejados[0] != '':
+                receber_arquivos(arquivos_servidor, arquivos_desejados)
 
     # cliente deseja visualizar todos os arquivos presentes no servidor:
     if event == 'Listagem':

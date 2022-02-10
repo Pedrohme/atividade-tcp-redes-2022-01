@@ -20,6 +20,7 @@ server.on('connection', socket => {
                 (action as Files.fileWriter).Act(() => {
                     console.log(`${(action as Files.fileWriter).fileName} written`);
                     socket.write('201');
+                    socket.end();
                 }, request);
                 break;
 

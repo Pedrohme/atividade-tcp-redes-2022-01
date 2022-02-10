@@ -27,21 +27,26 @@ def receber_arquivos(arquivos_servidor, arquivos_desejados):
     payloadSize = '256'.ljust(15, '#')
 
     os.makedirs('./files', exist_ok=True)
+    arquivos_existentes_cliente = os.listdir('./files')
+
     for arq in arquivos_desejados:
         if arq in arquivos_servidor:
-            fileName = arq.ljust(256, '#')
-            header = action + payloadSize + fileName
-            encoded = str.encode(header)
-            cliente.sendall(encoded)
+            if arq not in arquivos_existentes_cliente:
+                fileName = arq.ljust(256, '#')
+                header = action + payloadSize + fileName
+                encoded = str.encode(header)
+                cliente.sendall(encoded)
 
-            with open('./files/{}'.format(arq), 'ab') as f:
-                while True:
-                    print('Receiving...')
-                    chunk = cliente.recv(BUFFERSIZE)
-                    if not chunk:
-                        break
-                    f.write(chunk)
-                print('Done Receiving')
+                with open('./files/{}'.format(arq), 'ab') as f:
+                    while True:
+                        print('Receiving...')
+                        chunk = cliente.recv(BUFFERSIZE)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                    print('Done Receiving')
+            else:
+                print("File {} already exists in client's folder.".format(arq))
 
 
 # função que informa ao servidor que o cliente deseja visualizar os arquivos existentes no servidor:
@@ -57,14 +62,7 @@ def listar_arquivos_servidor():
     encoded = str.encode(header)
     cliente.sendall(encoded)
 
-    fragments = []
-    while True:
-        chunk = cliente.recv(BUFFERSIZE)
-        if not chunk:
-            break
-        fragments.append(chunk)
-
-    arr = b''.join(fragments).decode()
+    arr = recvall(cliente).decode()
 
     arquivos = [arr[i:i+256].split('#')[0] for i in range(0, len(arr), 256)]
 
@@ -93,3 +91,18 @@ def enviar_arquivos(arquivos):
             buffer = file.read(BUFFERSIZE)
         file.close()
         print("Done Sending")
+
+        arr = recvall(cliente).decode()
+        if (arr == '201'):
+            print('Arquivo enviado com sucesso!')
+
+
+def recvall(cliente):
+    fragments = []
+    while True:
+        chunk = cliente.recv(BUFFERSIZE)
+        if not chunk:
+            break
+        fragments.append(chunk)
+    arr = b''.join(fragments)
+    return arr

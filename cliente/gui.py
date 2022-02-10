@@ -28,28 +28,49 @@ layout = [
 # criando janela principal e recebendo seus eventos (interações com os botões)
 window = sg.Window('Servidor TCP', layout, margins=(
     120, 180), element_justification='c', element_padding=(0, 5))
+
+win_receber_active = False
+
 while True:
     event, values = window.read()
+
     # cliente deseja receber arquivo do servidor:
-    if event == 'Receber':
+    if event == 'Receber' and not win_receber_active:
         arquivos_servidor = listar_arquivos_servidor()
-        sg.popup('Arquivos disponíveis:', *files_list(arquivos_servidor),
-                 background_color='white', text_color='black', no_titlebar=True, keep_on_top=True)
 
-        if len(arquivos_servidor) > 0:
-            # lista de arquivo(s) desejado(s):
-            arquivos_desejados = sg.popup_get_text(
-                'Qual arquivo deseja? Para mais de um arquivo, separe-os por vírgula.', background_color='white', text_color='black', no_titlebar=True)
-            try:
-                arquivos_desejados = [x.strip()
-                                      for x in arquivos_desejados.split(',')]
-            except AttributeError:
-                arquivos_desejados = ['']
+        win_receber_active = True
+        window.hide()
 
-            if len(arquivos_desejados) >= 1 and arquivos_desejados[0] != '':
-                window.perform_long_operation(lambda: receber_arquivos(
-                    arquivos_servidor, arquivos_desejados), 'receber-arquivos')
-                sg.popup('Recebendo...', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
+        layout2 = [[sg.Text('Selecione os arquivos a receber')]]
+
+        for arq in arquivos_servidor:
+            layout2.append([sg.Checkbox(arq, key=arq)])
+
+        layout2.append([sg.Submit('Receber')])
+
+        win_receber = sg.Window('Receber Arquivos', layout2)
+        while True:
+            ev2, vals2 = win_receber.Read()
+            if ev2 == sg.WIN_CLOSED:
+                win_receber.Close()
+                win_receber_active = False
+                window.UnHide()
+                break
+
+            elif ev2 == 'Receber':
+                selecionados = []
+                for key, value in vals2.items():
+                    if (value):
+                        selecionados.append(key)
+
+                if len(selecionados) >= 1 and selecionados[0] != '':
+                    window.perform_long_operation(lambda: receber_arquivos(
+                        arquivos_servidor, selecionados), 'receber-arquivos')
+                    win_receber.Close()
+                    win_receber_active = False
+                    window.UnHide()
+                    sg.popup('Recebendo...', auto_close=True, no_titlebar=True,
+                             background_color='white', text_color='black')
 
     # cliente deseja visualizar todos os arquivos presentes no servidor:
     if event == 'Listagem':
@@ -70,12 +91,15 @@ while True:
         if len(arquivos_enviados) >= 1 and arquivos_enviados[0] != '':
             window.perform_long_operation(lambda: enviar_arquivos(
                 arquivos_enviados), 'arquivos-enviados')
-            sg.popup('Enviando...', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
+            sg.popup('Enviando...', auto_close=True, no_titlebar=True,
+                     background_color='white', text_color='black')
 
     if event == 'arquivos-enviados':
-        sg.popup('Enviado!', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
+        sg.popup('Enviado!', auto_close=True, no_titlebar=True,
+                 background_color='white', text_color='black')
     if event == 'receber-arquivos':
-        sg.popup('Recebido!', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
+        sg.popup('Recebido!', auto_close=True, no_titlebar=True,
+                 background_color='white', text_color='black')
 
     if event == sg.WIN_CLOSED or event == 'Encerrar':
         break

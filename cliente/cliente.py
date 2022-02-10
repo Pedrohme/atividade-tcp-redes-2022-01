@@ -21,16 +21,16 @@ def conectar_com_servidor():
 
 
 def receber_arquivos(arquivos_servidor, arquivos_desejados):
-    cliente = conectar_com_servidor()
-
-    action = 'C'
-    payloadSize = '256'.ljust(15, '#')
-
-    os.makedirs('./files', exist_ok=True)
-    arquivos_existentes_cliente = os.listdir('./files')
-
     for arq in arquivos_desejados:
         if arq in arquivos_servidor:
+            cliente = conectar_com_servidor()
+
+            action = 'C'
+            payloadSize = '256'.ljust(15, '#')
+
+            os.makedirs('./files', exist_ok=True)
+            arquivos_existentes_cliente = os.listdir('./files')
+
             if arq not in arquivos_existentes_cliente:
                 fileName = arq.ljust(256, '#')
                 header = action + payloadSize + fileName

@@ -22,23 +22,15 @@ Esse projeto trata-se de duas aplicações, um servidor e um cliente que utiliza
 <br />
 <br />
 
-## 💻 Pré-requisitos para executar os scripts localmente ou realizar o Build
-
-
-* [Python 3.9.7](https://www.python.org/)
-* [Node.js v16.13.2](https://nodejs.org/) 
-
-<br />
-<br />
-
 ## 🚀 Executando o projeto
 
 Por padrão o servidor e o cliente utilizam a porta 8124 se comunicar. Isso pode ser configurado para o cliente e o servidor, respectivamente nos arquivos [cliente.py](./cliente/cliente.py) e [config.json](./servidor/src/config.json)
+
 <br />
 
 ### 🔌 Executando com os arquivos executáveis  
 
-Faça o download dos arquivos executáveis apropriados para sua plataforma em Releases e execute-os. Deve ser executado o servidor e o cliente separadamente, simultaneamente.  
+Faça o download dos arquivos executáveis apropriados para sua plataforma em Releases e execute-os. Devem ser executados o servidor e o cliente separadamente, simultaneamente.  
 
 
 
@@ -46,7 +38,12 @@ Faça o download dos arquivos executáveis apropriados para sua plataforma em Re
 
 ### ⚙️ Executando localmente e realizando o Build
 
-Certifique-se de que está com os pré-requisitos instalados.  
+<br />
+
+#### 💻 Pré-requisitos para executar os scripts localmente ou realizar o Build
+
+* [Python 3.9.7](https://www.python.org/)
+* [Node.js v16.13.2](https://nodejs.org/) 
 
 <br />
 
@@ -56,12 +53,16 @@ Navegue até o diretório [cliente/](./cliente/)  com a CLI de preferência.
 Para executar localmente, instale os pacotes requeridos com o comando  
 `$ pip install -r requirements.txt`  
 
-E então execute  `$ python gui.py` ou `$ python3 gui.py`  
+E então execute  
+`$ python gui.py`
+
+<br />
 
 Para realizar o build do programa para um arquivo executável de sua plataforma, instale os pacotes requeridos com o comando  
 `$ pip install -r build_requirements.txt`  
 
-E então execute  `$ python buid.py` ou `$ python3 build.py` 
+E então execute  
+`$ python build.py`
 
 O arquivo executável se encontrará em [cliente/dist](./cliente/).
 
@@ -76,11 +77,15 @@ Para executar localmente, instale os pacotes requeridos com o comando:
 E então execute:  
 `$ npm start`  
 
+<br />
+
 Caso queira apenas transpilar o código typescript para javascript, execute o comando:  
 `$ npx tsc`
 
 Para realizar a compilação do programa para arquivos executáveis:  
 `$ npm run build`
+
+Os arquivos executáveis se encontrarão em [servidor/build](./servidor)
 
 <br />
 <br />

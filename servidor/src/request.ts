@@ -28,6 +28,11 @@ export class RequestStream extends Stream.Transform {
                 throw new Error("Stream buffer read error");
             }
         }
+
+        if (this.payloadTotalSize === this.header.payloadSize) {
+            this.push(null);
+        }
+
         if (this.header.valid && this.payloadTotalSize > this.header.payloadSize) {
             this.emit('payloadExceeded');
         }

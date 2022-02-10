@@ -57,14 +57,7 @@ def listar_arquivos_servidor():
     encoded = str.encode(header)
     cliente.sendall(encoded)
 
-    fragments = []
-    while True:
-        chunk = cliente.recv(BUFFERSIZE)
-        if not chunk:
-            break
-        fragments.append(chunk)
-
-    arr = b''.join(fragments).decode()
+    arr = recvall(cliente).decode()
 
     arquivos = [arr[i:i+256].split('#')[0] for i in range(0, len(arr), 256)]
 
@@ -93,3 +86,18 @@ def enviar_arquivos(arquivos):
             buffer = file.read(BUFFERSIZE)
         file.close()
         print("Done Sending")
+
+        arr = recvall(cliente).decode()
+        if (arr == '201'):
+            print('Arquivo enviado com sucesso!')
+
+
+def recvall(cliente):
+    fragments = []
+    while True:
+        chunk = cliente.recv(BUFFERSIZE)
+        if not chunk:
+            break
+        fragments.append(chunk)
+    arr = b''.join(fragments)
+    return arr

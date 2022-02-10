@@ -49,7 +49,7 @@ while True:
             if len(arquivos_desejados) >= 1 and arquivos_desejados[0] != '':
                 window.perform_long_operation(lambda: receber_arquivos(
                     arquivos_servidor, arquivos_desejados), 'receber-arquivos')
-                sg.popup('Recebendo...')
+                sg.popup('Recebendo...', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
 
     # cliente deseja visualizar todos os arquivos presentes no servidor:
     if event == 'Listagem':
@@ -70,12 +70,12 @@ while True:
         if len(arquivos_enviados) >= 1 and arquivos_enviados[0] != '':
             window.perform_long_operation(lambda: enviar_arquivos(
                 arquivos_enviados), 'arquivos-enviados')
-            sg.popup('Enviando...')
+            sg.popup('Enviando...', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
 
     if event == 'arquivos-enviados':
-        sg.popup('Enviado!')
+        sg.popup('Enviado!', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
     if event == 'receber-arquivos':
-        sg.popup('Recebido!')
+        sg.popup('Recebido!', auto_close=True, no_titlebar=True, background_color='white', text_color='black')
 
     if event == sg.WIN_CLOSED or event == 'Encerrar':
         break

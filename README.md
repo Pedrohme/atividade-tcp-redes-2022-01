@@ -1,8 +1,8 @@
 # Projeto Redes
 
-<!-- ![GitHub repo size](https://img.shields.io/github/repo-size/repoOwner/repoName?style=for-the-badge&label=tamanho%20do%20repo&color=blueviolet)
-![GitHub contributors](https://img.shields.io/github/contributors/repoOwner/repoName?style=for-the-badge&label=colaboradores&color=blueviolet)
-![GitHub stars](https://img.shields.io/github/stars/repoOwner/repoName?style=for-the-badge&label=estrelas&color=blueviolet) -->
+![GitHub repo size](https://img.shields.io/github/repo-size/Pedrohme/atividade-tcp-redes-2022-01?style=for-the-badge&label=tamanho%20do%20repo&color=blueviolet)
+![GitHub contributors](https://img.shields.io/github/contributors/Pedrohme/atividade-tcp-redes-2022-01?style=for-the-badge&label=colaboradores&color=blueviolet)
+![GitHub stars](https://img.shields.io/github/stars/Pedrohme/atividade-tcp-redes-2022-01?style=for-the-badge&label=estrelas&color=blueviolet)
 
 <br>
 
